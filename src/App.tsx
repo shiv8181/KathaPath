@@ -128,7 +128,7 @@ export default function App() {
           {activeWords.length ? activeWords.map(item => <div className="vocab-row" key={item.word}><div><strong>{item.word}</strong><p>{item.meaning}</p></div><button onClick={() => readWord(item.word)} aria-label={'Pronounce ' + item.word}><Volume2 size={16}/></button></div>) : <p className="vocab-empty">Choose a sample reading to explore selected vocabulary. For uploaded PDFs, use the spoken Hindi guide for sentence-level support.</p>}
         </div>
         <div className="spoken-only"><span className="spoken-icon"><Volume2 size={15}/></span><span><strong>Audio-first learning</strong><small>Hindi explanations are spoken, never written on screen.</small></span></div>
-      </LibraryPage>
+      </aside>
     </main>
     <footer className="app-footer"><span>© KathaPath · A calmer way to learn English</span><span><Clock3 size={13}/> Reading progress stays in this session</span></footer>
     <SettingsModal open={showSettings} voices={tutor.voices} englishVoice={tutor.englishVoice} hindiVoice={tutor.hindiVoice} onEnglishChange={tutor.setEnglishVoice} onHindiChange={tutor.setHindiVoice} onClose={() => setShowSettings(false)}/>
