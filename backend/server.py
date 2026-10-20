@@ -3,7 +3,7 @@
 import os
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from lib.db import client
@@ -38,9 +38,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(pdfs.router, prefix="/api")
-app.include_router(ai.router, prefix="/api")
-app.include_router(ocr.router, prefix="/api")
+# Resource routers are grouped under the shared /api prefix.
+api_router = APIRouter(prefix="/api")
+api_router.include_router(pdfs.router)
+api_router.include_router(ai.router)
+api_router.include_router(ocr.router)
+app.include_router(api_router)
 
 
 @app.get("/health")
