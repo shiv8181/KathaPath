@@ -22,7 +22,7 @@ export default function App() {
   const [busyLibrary, setBusyLibrary] = useState(false);
   const pdf = usePdfDocument();
   const chapter = chapters.find(item => item.id === activeId) ?? chapters[0];
-  const text = pdf.text || chapter.text;
+  const text = pdf.fileName ? pdf.text : chapter.text;
   const tutor = useSpeechTutor(text);
   const sentences = tutor.sentences;
   const currentSentence = sentences[Math.min(tutor.sentenceIndex, Math.max(0, sentences.length - 1))] ?? '';
@@ -45,7 +45,7 @@ export default function App() {
     try {
       await pdf.openFile(file, true);
       setActiveId('');
-      tutor.setNotice(pdf.error || 'PDF opened. Select Listen to begin reading.');
+      tutor.setNotice('PDF opened. Select Listen to begin reading.');
       void refreshLibrary();
     } catch (error) {
       tutor.setNotice(error instanceof Error ? error.message : 'We could not open this PDF.');
