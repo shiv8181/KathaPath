@@ -7,3 +7,4 @@ pymupdf>=1.24
 pytesseract>=0.3.13
 pillow>=10.4
 emergentintegrations
+fpdf2>=2.8,<3.0
