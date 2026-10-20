@@ -7,8 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from lib.db import client
-from routers.ai import router as ai_router
-from routers.pdfs import router as pdf_router
+from routers import ai, ocr, pdfs
 
 
 @asynccontextmanager
@@ -19,7 +18,7 @@ async def lifespan(_: FastAPI):
 
 app = FastAPI(
     title="KathaPath API",
-    description="PDF library and reading-tutor services for KathaPath.",
+    description="PDF library, OCR, and reading-tutor services for KathaPath.",
     version="0.1.0",
     lifespan=lifespan,
 )
@@ -39,8 +38,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(pdf_router, prefix="/api")
-app.include_router(ai_router, prefix="/api")
+app.include_router(pdfs.router, prefix="/api")
+app.include_router(ai.router, prefix="/api")
+app.include_router(ocr.router, prefix="/api")
 
 
 @app.get("/health")
