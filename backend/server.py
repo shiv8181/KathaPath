@@ -1,11 +1,13 @@
 """FastAPI application entry point for KathaPath."""
 
+import os
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from lib.db import client
+from routers.ai import router as ai_router
 from routers.pdfs import router as pdf_router
 
 
@@ -21,9 +23,6 @@ app = FastAPI(
     version="0.1.0",
     lifespan=lifespan,
 )
-
-# Restrict origins through KATHAPATH_CORS_ORIGINS in deployment.
-import os
 
 _allowed_origins = [
     origin.strip()
@@ -41,6 +40,7 @@ app.add_middleware(
 )
 
 app.include_router(pdf_router, prefix="/api")
+app.include_router(ai_router, prefix="/api")
 
 
 @app.get("/health")
