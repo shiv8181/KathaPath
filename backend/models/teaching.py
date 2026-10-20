@@ -1,24 +1,67 @@
-"""Pydantic models for the KathaPath PDF library."""
+"""Pydantic v2 models for the teaching app.
+
+Each model here is mirrored by a hand-written TS interface in
+src/lib/api.ts — keep the two in sync in the same edit.
+"""
 
 from datetime import datetime, timezone
+from typing import List
 from uuid import uuid4
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, Field
+
+
+def utcnow() -> datetime:
+    return datetime.now(timezone.utc)
 
 
 class PdfDoc(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-
     id: str = Field(default_factory=lambda: str(uuid4()))
-    filename: str = Field(min_length=1, max_length=255)
-    size_bytes: int = Field(ge=1)
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    title: str | None = Field(default=None, max_length=255)
-    reading_progress: float = Field(default=0.0, ge=0.0, le=1.0)
+    filename: str
+    size_bytes: int = 0
+    page_count: int = 0
+    is_sample: bool = False
+    created_at: datetime = Field(default_factory=utcnow)
 
 
 class PdfPatch(BaseModel):
-    model_config = ConfigDict(extra="forbid")
+    page_count: int | None = None
 
-    title: str | None = Field(default=None, max_length=255)
-    reading_progress: float | None = Field(default=None, ge=0.0, le=1.0)
+
+class OcrWord(BaseModel):
+    text: str
+    x: int
+    y: int
+    w: int
+    h: int
+
+
+class OcrRequest(BaseModel):
+    page_index: int
+    image: str  # base64 (or data-URL) jpeg/png of one rendered PDF page
+
+
+class OcrResponse(BaseModel):
+    page_index: int
+    width: int
+    height: int
+    words: List[OcrWord]
+
+
+class VocabItem(BaseModel):
+    word: str
+    hindi: str
+
+
+class SentenceExplanation(BaseModel):
+    index: int
+    hindi: str = ""
+    vocab: List[VocabItem] = Field(default_factory=list)
+
+
+class ExplainRequest(BaseModel):
+    sentences: List[str] = Field(min_length=1, max_length=16)
+
+
+class ExplainResponse(BaseModel):
+    items: List[SentenceExplanation]
