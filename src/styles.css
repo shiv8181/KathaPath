@@ -9,3 +9,5 @@
 .spin{animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
 .page-nav{display:inline-flex;align-items:center;gap:5px;border:1px solid #e7e1d6;background:#fffdf8;color:#5f7063;border-radius:8px;padding:7px 9px;font:10px 'DM Sans',sans-serif;letter-spacing:0}
 @media(max-width:760px){.header-actions{gap:5px}.header-actions .icon-button{padding:9px}.header-actions .icon-button span{display:none}.pdf-canvas-wrap{padding:8px;min-height:220px}.pdf-page-canvas{width:100%}.paper-footer{gap:8px}.paper-footer>span:nth-child(2){text-align:center}}
+
+.saved-library{margin-top:20px;border-top:1px solid #eee9de;padding-top:14px}.saved-pdf-row{width:100%;display:flex;align-items:center;gap:8px;text-align:left;padding:9px 6px;border:0;border-radius:8px;background:transparent;color:#536454;font-size:10px}.saved-pdf-row:hover{background:#f2f5ed}.saved-pdf-row>span{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.saved-pdf-row small{color:#92998d;font:9px 'JetBrains Mono',monospace}
