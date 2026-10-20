@@ -2,7 +2,7 @@ import { ChevronLeft, ChevronRight, FileText, LoaderCircle } from 'lucide-react'
 import type { RefObject } from 'react';
 
 type Props = {
-  canvasRef: RefObject<HTMLCanvasElement | null>;
+  canvasRef: RefObject<HTMLCanvasElement>;
   pageNumber: number;
   pageCount: number;
   loading: boolean;
