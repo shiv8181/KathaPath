@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import '@fontsource-variable/lora';
 import '@fontsource-variable/dm-sans';
 import '@fontsource-variable/jetbrains-mono';
+import './theme.css';
 import './styles.css';
 import App from './App';
 
