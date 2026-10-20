@@ -26,7 +26,7 @@ export default function App() {
   const tutor = useSpeechTutor(text);
   const sentences = tutor.sentences;
   const currentSentence = sentences[Math.min(tutor.sentenceIndex, Math.max(0, sentences.length - 1))] ?? '';
-  const activeWords = chapter.words.filter(item => currentSentence.toLowerCase().includes(item.word.toLowerCase()));
+  const activeWords = pdf.fileName ? [] : chapter.words.filter(item => currentSentence.toLowerCase().includes(item.word.toLowerCase()));
   const title = pdf.fileName || chapter.title;
 
   const refreshLibrary = async () => {
