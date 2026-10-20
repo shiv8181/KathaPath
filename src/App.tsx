@@ -1,4 +1,7 @@
 import { ChangeEvent, useMemo, useState } from 'react';
+import AppShell from './components/AppShell';
+import LibraryPage from './pages/LibraryPage';
+import ReaderPage from './pages/ReaderPage';
 import { AlertCircle, BookOpen, CheckCircle2, Clock3, FileText, Headphones, Languages, LibraryBig, Settings2, Sparkles, Upload, Volume2, X } from 'lucide-react';
 import PdfPageCanvas from './components/PdfPageCanvas';
 import PlaybackDock from './components/PlaybackDock';
@@ -88,14 +91,14 @@ export default function App() {
     return parts;
   }, [currentSentence]);
 
-  return <div className="app-shell">
+  return <AppShell>
     <header className="topbar" data-testid="app-header">
       <a className="brand" href="#" onClick={event => event.preventDefault()}><span className="brand-mark"><BookOpen size={23}/></span><span><strong>KathaPath</strong><small>READ · LISTEN · LEARN</small></span></a>
       <div className="topbar-center"><span className="status-dot"/><span>{pdf.fileName ? 'PDF reading engine' : 'Browser audio engine'}</span><span className="status-pill">READY</span></div>
       <div className="header-actions"><button className="icon-button" onClick={() => void refreshLibrary()} disabled={busyLibrary} aria-label="Refresh saved library"><LibraryBig size={17}/><span>{busyLibrary ? 'Loading…' : 'Sync library'}</span></button><button className="icon-button settings-trigger" onClick={() => setShowSettings(true)} aria-label="Open settings"><Settings2 size={19}/><span>Settings</span></button></div>
     </header>
     <main className="layout">
-      <aside className="library-panel panel">
+      <LibraryPage>
         <div className="section-heading"><div><span className="eyebrow">YOUR READING DESK</span><h2>Library</h2></div><LibraryBig size={21}/></div>
         <label className="upload-button" htmlFor="pdf-upload" data-testid="btn-upload-pdf-trigger"><Upload size={17}/> Upload a PDF <span>+</span></label>
         <input id="pdf-upload" className="visually-hidden" type="file" accept="application/pdf,.pdf" onChange={handleUpload} data-testid="input-pdf-file-upload"/>
@@ -105,16 +108,16 @@ export default function App() {
         {library.length > 0 && <div className="saved-library"><div className="vocab-title"><span className="eyebrow">SAVED PDFs</span><span className="vocab-count">{library.length}</span></div>{library.filter(item => !item.is_sample).map(item => <button key={item.id} className="saved-pdf-row" onClick={() => void openSavedPdf(item)} title={item.filename}><FileText size={15}/><span>{item.filename}</span><small>{item.page_count || 'PDF'}</small></button>)}</div>}
         <div className="library-note"><Sparkles size={17}/><p><strong>Small steps, strong skills.</strong><br/>Listen to a sentence, notice new words, and build confidence one page at a time.</p></div>
         <div className="library-footer"><span><CheckCircle2 size={14}/> 4 starter readings</span><span>{library.length} saved PDFs {busyLibrary ? '· syncing' : ''}</span><span>PDF limit: 25 MB</span></div>
-      </aside>
-      <section className="reader-column">
+      </LibraryPage>
+      <ReaderPage>
         <div className="reader-title-row"><div><span className="eyebrow">NOW READING</span><h1>{title}</h1><p>{pdf.fileName ? 'Uploaded PDF · original page layout' : chapter.category + ' · English practice'}</p></div><span className="document-chip"><FileText size={15}/>{pdf.fileName ? 'YOUR PDF' : 'SAMPLE'}</span></div>
         {pdf.fileName
           ? <PdfPageCanvas canvasRef={pdf.canvasRef} pageNumber={pdf.pageNumber} pageCount={pdf.pageCount} loading={pdf.loading} onPageChange={pdf.setPageNumber}/>
           : <div className="reader-card panel" data-testid="pdf-canvas-container"><div className="paper-toolbar"><span><FileText size={15}/> READING PAGE</span><span className="page-label" data-testid="pdf-page-indicator">TEXT VIEW · {sentences.length} SENTENCES</span></div><div className="paper-content">{sentences.map((sentence, index) => <p key={index} className={'sentence ' + (tutor.sentenceIndex === index ? 'sentence-active' : '')} onClick={() => { tutor.cancel(); tutor.setSentenceIndex(index); tutor.setNotice(''); }} data-testid={index === tutor.sentenceIndex ? 'current-sentence-text' : undefined}>{index === tutor.sentenceIndex ? sentenceParts.map((part, i) => <span key={i} className={!part.whitespace && part.start <= currentSentence.length && (currentSentence.slice(0, part.start).match(/\S+/g) ?? []).length === tutor.wordIndex ? 'word-active' : ''}>{part.value}</span>) : sentence}</p>)}</div><div className="paper-footer"><span>ENGLISH READING MODE</span><span><span className="amber-dot"/> Live word highlight</span></div></div>}
         {pdf.error && <div className="notice" role="status"><AlertCircle size={16}/><span>{pdf.error}</span><button onClick={() => pdf.setError('')} aria-label="Dismiss notice"><X size={15}/></button></div>}
-        <PlaybackDock sentenceIndex={tutor.sentenceIndex} sentenceCount={sentences.length} isPlaying={tutor.isPlaying} speed={tutor.speed} onToggle={tutor.togglePlayback} onRestart={tutor.restart} onMove={tutor.moveSentence} onSpeedChange={tutor.setSpeed}/>
+        <PlaybackDock sentenceIndex={tutor.sentenceIndex} sentenceCount={sentences.length} isPlaying={tutor.isPlaying} speed={tutor.speed} onToggle={tutor.togglePlayback} onRestart={tutor.restart} onMove={tutor.moveSentence} onSpeedChange={tutor.setSpeed} onVoiceSettings={() => setShowSettings(true)}/>
         {tutor.notice && <div className="notice" role="status"><AlertCircle size={16}/><span>{tutor.notice}</span><button onClick={() => tutor.setNotice('')} aria-label="Dismiss notice"><X size={15}/></button></div>}
-      </section>
+      </ReaderPage>
       <aside className="tutor-panel panel">
         <div className="tutor-header"><div><span className="eyebrow">YOUR AI STUDY COMPANION</span><h2>Tutor session</h2></div><span className="tutor-avatar"><Headphones size={20}/></span></div>
         <div className="session-status"><span className={'status-dot ' + (tutor.isPlaying ? 'live' : '')}/><span data-testid="tutor-status-badge">{tutor.isPlaying ? 'Reading aloud' : 'Ready when you are'}</span><span className="wave-mini"><i/><i/><i/><i/></span></div>
@@ -129,5 +132,5 @@ export default function App() {
     </main>
     <footer className="app-footer"><span>© KathaPath · A calmer way to learn English</span><span><Clock3 size={13}/> Reading progress stays in this session</span></footer>
     <SettingsModal open={showSettings} voices={tutor.voices} englishVoice={tutor.englishVoice} hindiVoice={tutor.hindiVoice} onEnglishChange={tutor.setEnglishVoice} onHindiChange={tutor.setHindiVoice} onClose={() => setShowSettings(false)}/>
-  </div>;
+  </AppShell>;
 }
