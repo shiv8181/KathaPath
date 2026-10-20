@@ -118,7 +118,7 @@ export function usePdfDocument() {
       ? new ResizeObserver(() => { if (!cancelled) void renderPage(); }) : null;
     if (observer && canvasRef.current?.parentElement) observer.observe(canvasRef.current.parentElement);
     return () => { cancelled = true; observer?.disconnect(); };
-  }, [renderPage, pdfUrl]);
+  }, [renderPage, pdfUrl, pageCount]);
 
   useEffect(() => () => {
     if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current);
@@ -128,6 +128,8 @@ export function usePdfDocument() {
   const clear = useCallback(() => {
     void pdfRef.current?.destroy();
     pdfRef.current = null;
+    if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current);
+    objectUrlRef.current = '';
     setFileName(''); setText(''); setPageCount(0); setPageNumber(1); setPageInfo(null); setPdfUrl(''); setIsScanned(false); setError('');
   }, []);
 
