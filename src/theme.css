@@ -1,0 +1,20 @@
+:root {
+  color-scheme: light;
+  --kp-cream: #FAF7F0;
+  --kp-paper: #FFFDF8;
+  --kp-forest: #1E3A2B;
+  --kp-forest-hover: #2D5A40;
+  --kp-amber: #F59E0B;
+  --kp-amber-soft: #FCD34D;
+  --kp-ink: #1C241E;
+  --kp-muted: #6B705C;
+  --kp-border: #E5DEC9;
+  --kp-font-heading: 'Lora', Georgia, serif;
+  --kp-font-body: 'DM Sans', system-ui, sans-serif;
+  --kp-font-mono: 'JetBrains Mono', monospace;
+}
+.font-heading { font-family: var(--kp-font-heading); }
+.font-body { font-family: var(--kp-font-body); }
+.font-mono { font-family: var(--kp-font-mono); }
+:focus-visible { outline: 3px solid var(--kp-amber); outline-offset: 3px; }
+::selection { background: var(--kp-amber-soft); color: var(--kp-forest); }
