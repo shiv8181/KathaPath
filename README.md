@@ -40,3 +40,24 @@ npm run preview
 ## Project direction
 
 The supplied blueprint calls for a React + TypeScript frontend, FastAPI/Python backend, MongoDB metadata storage, PDF.js rendering and text coordinates, PyMuPDF/Tesseract OCR fallback, spoken English followed by a short pause and spoken Hindi explanation, and the warm study-library design system. Implement those pieces incrementally and test each stage before calling it complete.
+
+
+## Backend API (first stage)
+
+The FastAPI backend now has a PDF metadata/file library: upload, list, fetch metadata, fetch the PDF file, patch title/progress, and delete. MongoDB stores metadata; the PDF bytes are saved in the configured upload directory.
+
+Requirements: Python 3.11+ and a running MongoDB instance. Tesseract and PyMuPDF are included in the dependency list for the upcoming OCR endpoint, but **the OCR endpoint itself is not implemented yet**.
+
+```bash
+cd backend
+python -m venv .venv
+# Windows: .venv\\Scripts\\activate
+# macOS/Linux: source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+uvicorn server:app --reload --port 8000
+```
+
+API documentation is available at `http://localhost:8000/docs` after the server starts. The frontend currently processes PDF text in the browser; connecting its upload/library flow to these backend endpoints is a follow-up task.
+
+Set `MONGODB_URL`, `MONGODB_DATABASE`, `KATHAPATH_CORS_ORIGINS`, and optionally `KATHAPATH_UPLOAD_DIR` for your environment. Do not commit real secrets or production credentials.
