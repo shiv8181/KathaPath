@@ -38,6 +38,20 @@ export default function App() {
   const selectChapter = (id: string) => {
     tutor.cancel(); pdf.clear(); setActiveId(id); tutor.setNotice('');
   };
+  const openSavedPdf = async (item: { id: string; filename: string }) => {
+    tutor.cancel();
+    try {
+      const response = await fetch(api.getPdfUrl(item.id));
+      if (!response.ok) throw new Error(`Could not download saved PDF (${response.status}).`);
+      const blob = await response.blob();
+      const file = new File([blob], item.filename, { type: 'application/pdf' });
+      await pdf.openFile(file, false);
+      setActiveId('');
+      tutor.setNotice('Saved PDF opened. Select Listen to begin reading.');
+    } catch (error) {
+      tutor.setNotice(error instanceof Error ? error.message : 'Could not open the saved PDF.');
+    }
+  };
   const handleUpload = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]; event.target.value = '';
     if (!file) return;
@@ -88,6 +102,7 @@ export default function App() {
         <div className="library-list">{chapters.map((item, index) => <button key={item.id} onClick={() => selectChapter(item.id)} className={'chapter-card ' + (!pdf.fileName && activeId === item.id ? 'selected' : '')} data-testid={index < 2 ? `chapter-card-${item.id === 'crow' ? 'thirsty-crow' : 'woodcutter'}` : undefined}>
           <span className="chapter-number">0{index + 1}</span><span className="chapter-meta"><strong>{item.title}</strong><small>{item.category} · {item.minutes} min</small></span><span className="chapter-open">↗</span>
         </button>)}</div>
+        {library.length > 0 && <div className="saved-library"><div className="vocab-title"><span className="eyebrow">SAVED PDFs</span><span className="vocab-count">{library.length}</span></div>{library.filter(item => !item.is_sample).map(item => <button key={item.id} className="saved-pdf-row" onClick={() => void openSavedPdf(item)} title={item.filename}><FileText size={15}/><span>{item.filename}</span><small>{item.page_count || 'PDF'}</small></button>)}</div>}
         <div className="library-note"><Sparkles size={17}/><p><strong>Small steps, strong skills.</strong><br/>Listen to a sentence, notice new words, and build confidence one page at a time.</p></div>
         <div className="library-footer"><span><CheckCircle2 size={14}/> 4 starter readings</span><span>{library.length} saved PDFs {busyLibrary ? '· syncing' : ''}</span><span>PDF limit: 25 MB</span></div>
       </aside>
