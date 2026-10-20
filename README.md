@@ -61,3 +61,19 @@ uvicorn server:app --reload --port 8000
 API documentation is available at `http://localhost:8000/docs` after the server starts. The frontend currently processes PDF text in the browser; connecting its upload/library flow to these backend endpoints is a follow-up task.
 
 Set `MONGODB_URL`, `MONGODB_DATABASE`, `KATHAPATH_CORS_ORIGINS`, and optionally `KATHAPATH_UPLOAD_DIR` for your environment. Do not commit real secrets or production credentials.
+
+
+### Seed the sample-story library
+
+After installing backend dependencies, starting MongoDB, and configuring `.env`, run:
+
+```bash
+cd backend
+python seed.py
+```
+
+This creates four sample-story PDF files in the configured upload directory and upserts their metadata into MongoDB. Existing generated PDFs are reused rather than overwritten. The script uses PyMuPDF to record the actual page count.
+
+### Hindi explanation service
+
+The backend exposes `POST /api/explain` for sentence-level Hindi explanations and vocabulary. Configure `EMERGENT_LLM_KEY` in the backend's local `.env` file before calling it. The key must remain server-side and must never be committed. Explanation results are cached in MongoDB. This endpoint is not yet wired into the frontend UI.
