@@ -79,7 +79,7 @@ export function usePdfDocument() {
         const viewport = first.getViewport({ scale: 1.5 });
         const canvas = document.createElement('canvas');
         canvas.width = Math.ceil(viewport.width); canvas.height = Math.ceil(viewport.height);
-        await first.render({ canvas, canvasContext: canvas.getContext('2d')!, viewport }).promise;
+        await first.render({ canvasContext: canvas.getContext('2d')!, viewport }).promise;
         try {
           const result = await api.ocr(0, canvas.toDataURL('image/png'));
           setText(result.words.map(word => word.text).join(' '));
@@ -106,7 +106,7 @@ export function usePdfDocument() {
     if (!context) return;
     canvas.width = Math.ceil(viewport.width);
     canvas.height = Math.ceil(viewport.height);
-    await page.render({ canvas, canvasContext: context, viewport }).promise;
+    await page.render({ canvasContext: context, viewport }).promise;
     setPageInfo({ pageNumber, width: viewport.width, height: viewport.height });
   }, [pageNumber]);
 
